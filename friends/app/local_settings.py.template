@@ -1,0 +1,3 @@
+SOCIAL_AUTH_FACEBOOK_KEY = 'facebook app key'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'facebook app secret'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email'] # Initial scope

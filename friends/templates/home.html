@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Friends Invite Example</title>
+  </head>
+  <body>
+    {% if user.is_authenticated %}
+      {% if friends %}
+        <h2>Facebook Friends</h2>
+        <ul>
+          {% for friend in friends %}
+            <li>
+              {{ friend.name }} <button data-user="{{ friend.id }}">Invite</button>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <a href="{% url "social:begin" backend="facebook" %}?invite=1">Invite your Facebook Friends</a>
+      {% endif %}
+    {% else %}
+      <a href="{% url "social:begin" backend="facebook" %}">Login with Facebook</a>
+    {% endif %}
+
+    {% if user.is_authenticated and friends %}
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+      <script>
+        $(function () {
+          $('ul').on('click', 'button', function (event) {
+            event.preventDefault();
+
+            FB.ui({
+              app_id: '{{ SOCIAL_AUTH_FACEBOOK_KEY }}',
+              method: 'send',
+              to: $(event.target).data('user'),
+              link: 'http://barr.io'
+            });
+          });
+        });
+      </script>
+
+      <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId: '{{ SOCIAL_AUTH_FACEBOOK_KEY }}',
+            xfbml: true,
+            version: 'v2.0'
+          });
+        };
+
+        (function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "https://connect.facebook.net/en_US/sdk.js";
+           fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+      </script>
+    {% endif %}
+  </body>
+</html>
