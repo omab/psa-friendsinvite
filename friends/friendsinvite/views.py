@@ -3,6 +3,7 @@ from requests import request
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -10,6 +11,11 @@ def home(request):
 
 
 def done(request):
+    return render(request, 'home.html')
+
+
+@login_required
+def invite(request):
     # Check if user access-token has got granted access to friends list and
     # retrieve friends. This value can be cached later on a model, or session,
     # or any place it's better for the project.
@@ -17,12 +23,13 @@ def done(request):
         friends = get_friends(request.user)
     else:
         friends = []
-    return render(request, 'home.html', {
+    return render(request, 'invite.html', {
       'friends': friends,
       'SOCIAL_AUTH_FACEBOOK_KEY': settings.SOCIAL_AUTH_FACEBOOK_KEY
     })
 
 
+@login_required
 def logout(request):
     auth_logout(request)
     return redirect('/')
